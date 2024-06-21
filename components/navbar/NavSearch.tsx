@@ -1,5 +1,15 @@
+import { Input } from "../ui/input"
+
+
 function NavSearch() {
-    return <h1>NavSearch</h1>
+
+    return (
+        <Input
+            type='search'
+            placeholder='find a property...'
+            className='max-w-xs dark:bg-muted '
+        />
+    )
 }
 
 export default NavSearch
