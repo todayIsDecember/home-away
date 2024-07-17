@@ -1,6 +1,6 @@
 'use server'
 
-import { ImageSchema, ProfileSchema, validateFieldsWithZodSchema } from "./schemas";
+import { ImageSchema, ProfileSchema, propertySchema, validateFieldsWithZodSchema } from "./schemas";
 import db from './db'
 import { auth, currentUser, clerkClient } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
@@ -109,4 +109,49 @@ export const updateProfileImageActions = async (prevState: any, formdata: FormDa
     } catch (error) {
         return renderError(error);
     }
+}
+
+export const createPropertyAction = async (initialState: any, formdata: FormData) => {
+    const user = await getAuthUser();
+    try {
+        const rawData = Object.fromEntries(formdata);
+        const file = formdata.get('image') as File;
+        const validateFile = validateFieldsWithZodSchema(ImageSchema, { image: file });
+        const fullPath = await uploadImage(validateFile.image);
+        const validatedFields = validateFieldsWithZodSchema(propertySchema, rawData);
+        await db.property.create({
+            data: {
+                ...validatedFields,
+                image: fullPath,
+                profileId: user.id
+            }
+        })
+    } catch (error) {
+        return renderError(error);
+    }
+    redirect ('/')
+}
+
+export const fetchProperties = async ({search = '', category}: {search?: string, category?: string}) => {
+    const properties = await db.property.findMany({
+        where: {
+            category,
+            OR: [
+            {name: {contains: search, mode: 'insensitive'}},
+            {tagline: {contains: search, mode: 'insensitive'}}
+            ]
+        },
+        select: {
+            id: true,
+            name: true,
+            tagline: true,
+            price: true,
+            country: true,
+            image: true
+        },
+        orderBy: {
+            createdAt: 'desc'
+        }
+    })
+    return properties
 }
