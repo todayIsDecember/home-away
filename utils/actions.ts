@@ -38,7 +38,7 @@ export const createUserAction = async (initialState: any, formdata: FormData) =>
                 hasProfile: true
             }
         })
-        
+
     } catch (error) {
         console.log(error);
         return renderError(error);
@@ -154,4 +154,50 @@ export const fetchProperties = async ({search = '', category}: {search?: string,
         }
     })
     return properties
+}
+
+export const fetchFavouriteId = async({
+    propertyId,
+    }: {
+    propertyId: string;
+    }) => {
+    const user = await getAuthUser();
+    const favourite = await db.favorite.findFirst({
+        where: {
+            profileId: user.id,
+            propertyId: propertyId
+        },
+        select: {
+            id: true
+        }
+    });
+    return favourite?.id || null
+};
+
+export const toggleFavoriteAction = async(prevState: {propertyId: string, favoriteId: string | null, pathname: string}) => {
+    const user = await getAuthUser()
+    const {propertyId, favoriteId, pathname} = prevState;
+    try {
+
+        if(favoriteId)
+        {
+            await db.favorite.delete({
+                where: {
+                    id: favoriteId
+                }
+            })
+        }
+        else {
+            await db.favorite.create({
+                data: {
+                    propertyId,
+                    profileId: user.id
+                }
+            })
+        }
+        revalidatePath(pathname)
+        return {message: favoriteId ? 'removed from faves' : 'added to faves'}
+    } catch (error) {
+        return renderError(error)
+    }
 }
