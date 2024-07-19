@@ -228,6 +228,14 @@ export const fetchPropertyDetails = async(id: string) => {
     return db.property.findUnique({
         where: {
             id
+        },
+        include: {
+            profile: {
+                select: {
+                    firstName: true,
+                    profileImage: true
+                }
+            }
         }
     })
 }
