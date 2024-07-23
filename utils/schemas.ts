@@ -80,3 +80,9 @@ function validateFile() {
             );
         }, 'File must be an image');
 }
+
+export const createReviewSchema = z.object({
+    propertyId: z.string(),
+    rating: z.coerce.number().int().min(1).max(5),
+    comment: z.string().min(10, {message: 'comment must be at least 10 characters'}).max(1000, {message: 'comment must be less than 1000 characters'})
+})

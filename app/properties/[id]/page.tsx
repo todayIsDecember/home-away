@@ -10,6 +10,15 @@ import ShareButton from "@/components/properties/ShareButton";
 import UserInfo from "@/components/properties/UserInfo";
 import { fetchPropertyDetails } from "@/utils/actions";
 import { redirect } from "next/navigation";
+import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
+import SubmitReviews from "@/components/reviews/SubmitReviews";
+import PropertyReviews from "@/components/reviews/PropertyReviews";
+
+const DynamicMap = dynamic(() => import('@/components/properties/PropertyMap'), {
+    ssr: false,
+    loading: () => <Skeleton className='h-[400px] w-full' />,
+})
 
 async function PropertyDetailsPage({params}: {params: {id: string}}) {
     const property = await fetchPropertyDetails(params.id);
@@ -40,11 +49,14 @@ async function PropertyDetailsPage({params}: {params: {id: string}}) {
                     <UserInfo profile={property.profile} />
                     <Description description={property.description} />
                     <Amenities amenities={property.amenities} />
+                    <DynamicMap countryCode={property.country} />
                 </div>
                 <div className="lg:col-span-4">
                     <BookingCalendar />
                 </div>
             </section>
+            <SubmitReviews propertyId={property.id} />
+            <PropertyReviews propertyId={property.id} />
         </section>
     )
 }
