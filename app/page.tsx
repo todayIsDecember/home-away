@@ -4,16 +4,15 @@ import PropertiesContainer from "@/components/home/PropertiesContainer";
 import { Suspense } from "react";
 
 export default function HomePage({searchParams}: {searchParams: {category?: string, search?: string}}) {
-  console.log(searchParams);
   return (
     <section>
-      <CategoriesList 
-        category={searchParams.category} 
+      <CategoriesList
+        category={searchParams.category}
         search={searchParams.search}
       />
       <Suspense fallback={<LoadingCards />}>
-        <PropertiesContainer 
-        category={searchParams.category} 
+        <PropertiesContainer
+        category={searchParams.category}
         search={searchParams.search}
         />
       </Suspense>
