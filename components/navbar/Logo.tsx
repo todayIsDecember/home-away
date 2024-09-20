@@ -2,9 +2,9 @@ import { Button } from "../ui/button"
 import Link from 'next/link'
 import {LuTent} from 'react-icons/lu'
 
-function Logo() {
+function Logo({className = ''}) {
     return (
-        <Button size='icon' asChild>
+        <Button size='icon' asChild className={className}>
             <Link href='/'>
                 <LuTent className="w-8 h-8"/>
             </Link>
