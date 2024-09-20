@@ -5,6 +5,8 @@ import Navbar from '@/components/navbar/Navbar';
 import Providers from '@/app/providers';
 import { ClerkProvider } from '@clerk/nextjs';
 import ImageContainer from '@/components/properties/ImageContainer';
+import { Suspense } from 'react';
+import LoadingImage from '@/components/properties/LoadImage';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -24,11 +26,13 @@ export default function RootLayout({
 				<body className={inter.className}>
 					<Providers>
 						<Navbar />
-						<ImageContainer
-							mainImage="/images/img.jpg"
-							name="mainImage"
-							isMain
-						/>
+						<Suspense fallback={<LoadingImage />}>
+							<ImageContainer
+								mainImage="https://pzpezrigzybzhfwjwjjm.supabase.co/storage/v1/object/public/temp-home-away/clay-banks-QQRB_Ac1FYA-unsplash.jpg"
+								name="mainImage"
+								isMain
+							/>
+						</Suspense>
 						<main className="container py-10">{children}</main>
 					</Providers>
 				</body>

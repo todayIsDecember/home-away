@@ -20,7 +20,7 @@ function ImageContainer({
 				fill
 				sizes="100vw"
 				alt={name}
-				className="object-cover rounded object-center"
+				className="object-cover rounded"
 				priority
 			/>
 			{isMain && (
