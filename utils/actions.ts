@@ -1,6 +1,7 @@
 'use server';
 
 import {
+	addressSchema,
 	createReviewSchema,
 	ImageSchema,
 	ProfileSchema,
@@ -142,13 +143,19 @@ export const createPropertyAction = async (
 	formdata: FormData
 ) => {
 	const user = await getAuthUser();
+
 	try {
 		const rawData = Object.fromEntries(formdata);
-		const file = formdata.get('image') as File;
-		const validateFile = validateFieldsWithZodSchema(ImageSchema, {
-			image: file,
-		});
-		const fullPath = await uploadImage(validateFile.image);
+
+		const files = formdata.getAll('image') as File[];
+		const images: string[] = await Promise.all(
+			files.map(async (file) => {
+				const validateFile = validateFieldsWithZodSchema(ImageSchema, {
+					image: file,
+				});
+				return await uploadImage(validateFile.image);
+			})
+		);
 		const validatedFields = validateFieldsWithZodSchema(
 			propertySchema,
 			rawData
@@ -156,7 +163,7 @@ export const createPropertyAction = async (
 		await db.property.create({
 			data: {
 				...validatedFields,
-				image: fullPath,
+				image: images,
 				profileId: user.id,
 			},
 		});

@@ -30,7 +30,7 @@ function NavSearch({ className = '' }: { className: string }) {
 	return (
 		<Input
 			type="search"
-			placeholder="find a property..."
+			placeholder="Пошук..."
 			className={`w-full sm:max-w-xs dark:bg-muted ${className}`}
 			onChange={(e) => {
 				setSearch(e.target.value);

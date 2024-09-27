@@ -1,8 +1,8 @@
 export const formatCurrency = (amount: number | null) => {
 	const value = amount || 0;
-	return Intl.NumberFormat('en-US', {
+	return Intl.NumberFormat('uk-UA', {
 		style: 'currency',
-		currency: 'USD',
+		currency: 'UAH',
 		minimumFractionDigits: 0,
 		maximumFractionDigits: 0,
 	}).format(value);

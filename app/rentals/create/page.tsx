@@ -5,52 +5,73 @@ import { SubmitButton } from '@/components/form/Buttons';
 import PriceInput from '@/components/form/PriceInput';
 import CategoriesInput from '@/components/form/CategoriesInput';
 import TextareaInput from '@/components/form/TextareaInput';
-import CountryInput from '@/components/form/CountriesInput';
 import ImageInput from '@/components/form/ImageInput';
 import CounterInput from '@/components/form/CounterInput';
 import AmenitiesInput from '@/components/form/AmenitiesInput';
+import { categories } from '@/utils/categories';
+import { pets } from '@/utils/pets';
+import { locations } from '@/utils/locations';
 
 function CreatePropertyPage() {
-    return (
-        <section>
-            <h1 className="text-2xl capitalize font-semibold mb-8">Create Property</h1>
-            <div className='border p-8 rounded-md'>
-                <h3 className='text-lg mb-4 font-medium'>General Info</h3>
-                <FormContainer action={createPropertyAction}>
-                    <div className='grid md:grid-cols-2 gap-8 mb-4'>
-                        <FormInput
-                            name='name'
-                            type='text'
-                            defaultValue='Cabin in Latvia'
-                            label='Name (20 limit)'
-                        />
-                        <FormInput
-                            name='tagline'
-                            type='text'
-                            defaultValue='Dream Getaway Awaits You Here!'
-                            label='Tagline (30 limit)'
-                        />
-                        <PriceInput />
-                        {/* categories */}
-                        <CategoriesInput />
-                    </div>
-                    <TextareaInput name='description' labelText='Description (10 - 1000 Words)'/>
-                    <div className='grid sm:grid-cols-2 gap-8 mt-4'>
-                        <CountryInput />
-                        <ImageInput></ImageInput>
-                    </div>
-                    <h3 className='text-lg mt-8 mb-4 font-medium'>Accommodation Details</h3>
-                    <CounterInput detail='guests' />
-                    <CounterInput detail='bedrooms' />
-                    <CounterInput detail='beds' />
-                    <CounterInput detail='baths' />
-                    <h3 className='text-lg mt-10 mb-6 font-medium'>Amenities</h3>
-                    <AmenitiesInput />
-                    <SubmitButton text='create rental' className='mt-12' />
-                </FormContainer>
-            </div>
-        </section>
-    )
+	return (
+		<section>
+			<h1 className="text-2xl capitalize font-semibold mb-8">
+				Створити Заявку
+			</h1>
+			<div className="border p-8 rounded-md">
+				<h3 className="text-lg mb-4 font-medium">Основна інформація</h3>
+				<FormContainer action={createPropertyAction}>
+					<div className="grid md:grid-cols-2 gap-8 mb-4">
+						<FormInput
+							name="name"
+							type="text"
+							defaultValue="Cabin in Latvia"
+							label="Назва ( ліміт 20 )"
+						/>
+						<FormInput
+							name="tagline"
+							type="text"
+							defaultValue="Dream Getaway Awaits You Here!"
+							label="Слоган ( ліміт 30 )"
+						/>
+						<PriceInput />
+						{/* categories */}
+						<CategoriesInput
+							name="category"
+							label="категорія"
+							variants={categories}
+						/>
+						<CategoriesInput
+							name="pets"
+							label="Домашні Тварини"
+							variants={pets}
+						/>
+						<CategoriesInput
+							name="location"
+							label="Локація"
+							variants={locations}
+						/>
+					</div>
+					<TextareaInput name="description" labelText="Опис (10 - 1000 слів)" />
+					<ImageInput></ImageInput>
+						<FormInput
+							name="address"
+							type="text"
+							defaultValue="Київ вулиця Уманська 23/9"
+							label="Адреса"
+						/>
+					<h3 className="text-lg mt-8 mb-4 font-medium">Деталі проживання</h3>
+					<CounterInput detail="guests" name="гостей" />
+					<CounterInput detail="bedrooms" name="спальних кімнат" />
+					<CounterInput detail="beds" name="спальних місць" />
+					<CounterInput detail="baths" name="ванних кімнат" />
+					<h3 className="text-lg mt-10 mb-6 font-medium">Зручності</h3>
+					<AmenitiesInput />
+					<SubmitButton text="create rental" className="mt-12" />
+				</FormContainer>
+			</div>
+		</section>
+	);
 }
 
-export default CreatePropertyPage
+export default CreatePropertyPage;

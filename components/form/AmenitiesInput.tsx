@@ -34,7 +34,7 @@ function AmenitiesInput({ defaultValue }: { defaultValue?: Amenity[] }) {
 			/>
 			<div className="grid grid-cols-2 gap-4">
 				{selectedAmenities.map((amenity) => (
-					<div className="flex items-center space-x-2">
+					<div key={amenity.name} className="flex items-center space-x-2">
 						<Checkbox
 							id={amenity.name}
 							checked={amenity.selected}

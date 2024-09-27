@@ -29,8 +29,11 @@ model Property {
   name        String
   tagline     String
   category    String
-  image       String
-  country     String
+  image       String[]
+  country     String   @default("Україна")
+  address    String
+  location   String
+  pets       String
   description String
   price       Int
   guests      Int
@@ -46,6 +49,7 @@ model Property {
   reviews Review[]
   bookings Booking[]
 }
+
 
 model Favorite {
   id        String   @id @default(uuid())
