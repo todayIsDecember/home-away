@@ -45,7 +45,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 						currency: 'usd',
 						product_data: {
 							name: `${name}`,
-							images: [image],
+							images: [image[0]],
 							description: `Stay in this wonderful place for ${totalNights} nights, from ${formatDate(
 								checkIn
 							)} to ${formatDate(checkOut)}. Enjoy your stay!`,
@@ -61,10 +61,10 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 			clientSecret: session.client_secret,
 		});
 	} catch (error) {
-        console.log(error);
-        return Response.json(null, {
-            status: 500,
-            statusText: 'Internal Server Erorr'
-        })
-    }
+		console.log(error);
+		return Response.json(null, {
+			status: 500,
+			statusText: 'Internal Server Erorr',
+		});
+	}
 };

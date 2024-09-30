@@ -721,3 +721,11 @@ export const fetchReservationStats = async () => {
 		amount: total._sum.orderTotal || 0,
 	};
 };
+
+export const getLocation = async (address: string) => {
+	const api_key = process.env.GOOGLE_API_KEY;
+	const response = await fetch(
+		`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${api_key}`
+	);
+	return response.json();
+};

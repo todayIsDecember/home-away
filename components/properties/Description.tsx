@@ -16,7 +16,7 @@ function Description({description}: {description: string}) {
     const displayedDescription = isLongDescription && !isFullDescriptionShown ? words.slice(0, 100).join(' ') + '...' : description;
     return (
         <article className="mt-4">
-            <Title text="Description" />
+            <Title text="Опис" />
             <p className="text-muted-foreground font-light leading-loose">{displayedDescription}</p>
             {isLongDescription && <Button variant='link' className='pl-0' onClick={toggleDescription}>
                     {isFullDescriptionShown ? 'Show less' : 'Show more'}

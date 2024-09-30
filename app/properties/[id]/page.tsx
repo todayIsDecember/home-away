@@ -7,13 +7,18 @@ import ImageContainer from '@/components/properties/ImageContainer';
 import PropertyDetails from '@/components/properties/PropertyDetails';
 import ShareButton from '@/components/properties/ShareButton';
 import UserInfo from '@/components/properties/UserInfo';
-import { fetchPropertyDetails, findExistingReview } from '@/utils/actions';
+import {
+	fetchPropertyDetails,
+	findExistingReview,
+	getLocation,
+} from '@/utils/actions';
 import { redirect } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { Skeleton } from '@/components/ui/skeleton';
 import SubmitReviews from '@/components/reviews/SubmitReviews';
 import PropertyReviews from '@/components/reviews/PropertyReviews';
 import { auth } from '@clerk/nextjs/server';
+import ImagesContainer from '@/components/properties/ImagesContainer';
 
 const DynamicMap = dynamic(
 	() => import('@/components/properties/PropertyMap'),
@@ -36,8 +41,11 @@ async function PropertyDetailsPage({ params }: { params: { id: string } }) {
 	if (!property) {
 		redirect('/');
 	}
-	const { guests, bedrooms, beds, baths } = property;
+	const { guests, bedrooms, beds, baths, address } = property;
 	const details = { guests, bedrooms, beds, baths };
+	const { lat, lng } = await getLocation(address).then(
+		(res) => res.results[0].geometry.location
+	);
 
 	const userId = auth().userId;
 	const isNotOwner = property.profile.clerkId !== userId;
@@ -54,7 +62,7 @@ async function PropertyDetailsPage({ params }: { params: { id: string } }) {
 					<FavoriteToggleButton propertyId={property.id} />
 				</div>
 			</header>
-			<ImageContainer mainImage={property.image[0]} name={property.name} />
+			<ImagesContainer images={property.image} />
 			<section className="lg:grid lg:grid-cols-12 gap-x-12 mt-12">
 				<div className="lg:col-span-8">
 					<div className="flex gap-x-4 items-center">
@@ -65,7 +73,7 @@ async function PropertyDetailsPage({ params }: { params: { id: string } }) {
 					<UserInfo profile={property.profile} />
 					<Description description={property.description} />
 					<Amenities amenities={property.amenities} />
-					<DynamicMap countryCode={'AT'} />
+					<DynamicMap lat={lat} lng={lng} />
 				</div>
 				<div className="lg:col-span-4">
 					<DynamicBookingWrapper

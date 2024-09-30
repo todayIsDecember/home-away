@@ -5,7 +5,7 @@ function Logo({ className = '' }) {
 	return (
 		<Button size="default" variant="outline" asChild className={className}>
 			<Link href="/">
-				<p className="captitalize tracking-widest">Простір</p>
+				<p className="captitalize tracking-widest">Home Away</p>
 			</Link>
 		</Button>
 	);

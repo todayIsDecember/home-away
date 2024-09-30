@@ -28,7 +28,9 @@ export default function RootLayout({
 						<Navbar />
 						<Suspense fallback={<LoadingImage />}>
 							<ImageContainer
-								mainImage="https://pzpezrigzybzhfwjwjjm.supabase.co/storage/v1/object/public/temp-home-away/clay-banks-QQRB_Ac1FYA-unsplash.jpg"
+								mainImage={
+									'https://pzpezrigzybzhfwjwjjm.supabase.co/storage/v1/object/public/temp-home-away/olivier-guillard-FKJgBUDoVC0-unsplash.jpg'
+								}
 								name="mainImage"
 								isMain
 							/>
