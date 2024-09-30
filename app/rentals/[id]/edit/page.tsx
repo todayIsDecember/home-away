@@ -17,15 +17,15 @@ import { type Amenity } from '@/utils/amenities';
 import ImageInputContainer from '@/components/form/ImageInputContainer';
 
 async function EditRentalPage({ params }: { params: { id: string } }) {
-    const property = await fetchRentalDetails(params.id);
+	const property = await fetchRentalDetails(params.id);
 	if (!property) redirect('/');
-    const defaultAmenities: Amenity[] = JSON.parse(property.amenities)
+	const defaultAmenities: Amenity[] = JSON.parse(property.amenities);
 	return (
 		<section>
 			<h1 className="text-2xl capitalize mb-8 font-semibold">Edit Property</h1>
 			<div className="p-8 border rounded-md">
 				<ImageInputContainer
-					image={property.image}
+					image={property.image[0]}
 					name={property.name}
 					action={updatePropertyImageAction}
 					text="Update Image"
@@ -48,7 +48,7 @@ async function EditRentalPage({ params }: { params: { id: string } }) {
 							defaultValue={property.tagline}
 						/>
 						<PriceInput defaultValue={property.price} />
-						<CategoriesInput defaultValue={property.category} />
+						{/* <CategoriesInput defaultValue={property.category} name='category'/> */}
 						<CountriesInput defaultValue={property.country} />
 					</div>
 					<TextareaInput
@@ -59,12 +59,12 @@ async function EditRentalPage({ params }: { params: { id: string } }) {
 					<h3 className="text-lg mt-8 mb-4 font-medium">
 						Accommodation Details
 					</h3>
-					<CounterInput detail="guests" defaultValue={property.guests} />
+					{/* <CounterInput detail="guests" defaultValue={property.guests} />
 					<CounterInput detail="bedrooms" defaultValue={property.bedrooms} />
 					<CounterInput detail="beds" defaultValue={property.beds} />
-					<CounterInput detail="baths" defaultValue={property.baths} />
-                    <AmenitiesInput defaultValue={defaultAmenities} />
-					<SubmitButton text="edit property" className='mt-12'/>
+					<CounterInput detail="baths" defaultValue={property.baths} /> */}
+					<AmenitiesInput defaultValue={defaultAmenities} />
+					<SubmitButton text="edit property" className="mt-12" />
 				</FormContainer>
 			</div>
 		</section>
