@@ -25,11 +25,11 @@ export default function RootLayout({
 			<html lang="en" suppressHydrationWarning>
 				<body className={inter.className}>
 					<Providers>
-						<Navbar />
+						<Navbar className="absolute z-20 w-full backdrop-blur-sm shadow-2xl" />
 						<Suspense fallback={<LoadingImage />}>
 							<ImageContainer
 								mainImage={
-									'https://pzpezrigzybzhfwjwjjm.supabase.co/storage/v1/object/public/temp-home-away/olivier-guillard-FKJgBUDoVC0-unsplash.jpg'
+									'https://pzpezrigzybzhfwjwjjm.supabase.co/storage/v1/object/public/temp-home-away/brandon-siu-f60qQpYOHd4-unsplash.jpg'
 								}
 								name="mainImage"
 								isMain

@@ -1,4 +1,4 @@
-import { FaCat, FaDog, FaBan } from 'react-icons/fa';
+import { FaCat, FaDog } from 'react-icons/fa';
 import { MdPets } from 'react-icons/md';
 import { variants } from './types';
 
@@ -30,8 +30,8 @@ export const pets: variants[] = [
     },
     {
         label: 'NOT',
-        name: 'без домашніх улуюленців',
-        icon: FaBan
+        name: 'без домашніх улюбленців',
+        icon: FaDog
     },
 
 ];

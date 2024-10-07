@@ -7,7 +7,7 @@ type ReviewCardProps = {
 		comment: string;
 		rating: number;
 		name: string;
-		image: string[];
+		image: string;
 	};
 	children?: React.ReactNode;
 };
@@ -18,7 +18,7 @@ function ReviewCard({ reviewInfo, children }: ReviewCardProps) {
 			<CardHeader>
 				<div className="flex items-center">
 					<Image
-						src={reviewInfo.image[0]}
+						src={reviewInfo.image}
 						width={48}
 						height={48}
 						alt={reviewInfo.name}

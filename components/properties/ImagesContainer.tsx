@@ -68,8 +68,8 @@ function ImagesContainer({ images }: { images: string[] }) {
 						</div>
 					</DialogTrigger>
 				))}
-				<DialogContent>
-						<DynamicSlider images={images} />
+				<DialogContent className="max-w-[900px]">
+					<DynamicSlider images={images} />
 				</DialogContent>
 			</Dialog>
 		</section>

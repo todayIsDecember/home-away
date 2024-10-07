@@ -2,7 +2,7 @@ import FormContainer from "@/components/form/FormContainer";
 import { updateProileAction, fetchProfile, updateProfileImageActions } from "@/utils/actions";
 import { SubmitButton } from "@/components/form/Buttons";
 import FormInput from "@/components/form/FormInput";
-import ImageInputContainer from "@/components/form/ImageInputContainer";
+import {ImageInputContainer} from "@/components/form/ImageInputContainer";
 
 async function ProfilePage() {
     const profile = await fetchProfile();

@@ -1,7 +1,6 @@
 'use server';
 
 import {
-	addressSchema,
 	createReviewSchema,
 	ImageSchema,
 	ProfileSchema,
@@ -12,10 +11,11 @@ import db from './db';
 import { auth, currentUser, clerkClient } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { uploadImage } from './supabase';
+import { deleteImageFromStorage, uploadImage } from './supabase';
 import { calculateTotal } from './calculateTotal';
 import { error } from 'console';
 import { formatDate } from './format';
+import { getRelativePaths } from './constructPath';
 
 const getAuthUser = async () => {
 	const user = await currentUser();
@@ -108,7 +108,7 @@ export const updateProileAction = async (
 			data: validatedFields,
 		});
 		revalidatePath('/profile');
-		return { message: 'Profile updated successfully' };
+		return { message: 'Профіль Успішно Оновлено' };
 	} catch (error) {
 		return renderError(error);
 	}
@@ -132,7 +132,7 @@ export const updateProfileImageActions = async (
 			},
 		});
 		revalidatePath('/profile');
-		return { message: 'Profile image updated successfully' };
+		return { message: 'Зображення Успішно Загружено' };
 	} catch (error) {
 		return renderError(error);
 	}
@@ -148,6 +148,10 @@ export const createPropertyAction = async (
 		const rawData = Object.fromEntries(formdata);
 
 		const files = formdata.getAll('image') as File[];
+		const validatedFields = validateFieldsWithZodSchema(
+			propertySchema,
+			rawData
+		);
 		const images: string[] = await Promise.all(
 			files.map(async (file) => {
 				const validateFile = validateFieldsWithZodSchema(ImageSchema, {
@@ -155,10 +159,6 @@ export const createPropertyAction = async (
 				});
 				return await uploadImage(validateFile.image);
 			})
-		);
-		const validatedFields = validateFieldsWithZodSchema(
-			propertySchema,
-			rawData
 		);
 		await db.property.create({
 			data: {
@@ -244,7 +244,9 @@ export const toggleFavoriteAction = async (prevState: {
 			});
 		}
 		revalidatePath(pathname);
-		return { message: favoriteId ? 'removed from faves' : 'added to faves' };
+		return {
+			message: favoriteId ? 'видалено з улюблених' : 'добавлено до Улюблених',
+		};
 	} catch (error) {
 		return renderError(error);
 	}
@@ -307,7 +309,7 @@ export const createReviewAction = async (
 			},
 		});
 		revalidatePath(`/properties/${validatedFileds.propertyId}`);
-		return { message: 'Review submitted successfully' };
+		return { message: 'Дякуюємо за відгук' };
 	} catch (error) {
 		return renderError(error);
 	}
@@ -370,7 +372,7 @@ export const deleteReviewAction = async (prevState: { reviewId: string }) => {
 		});
 
 		revalidatePath('/reviews');
-		return { message: 'Review deleted successfully' };
+		return { message: 'відгук успішно видалено' };
 	} catch (error) {
 		return renderError(error);
 	}
@@ -502,7 +504,7 @@ export const deleteRentalAction = async (prevState: { propertyId: string }) => {
 			},
 		});
 		revalidatePath('/rentals');
-		return { message: 'Rental deleted successfully' };
+		return { message: 'Видалення успішне' };
 	} catch (error) {
 		return renderError(error);
 	}
@@ -584,7 +586,7 @@ export const updatePropertyAction = async (
 		});
 		revalidatePath(`/rentals/${propertyId}/edit`);
 		return {
-			message: 'Update Successful',
+			message: 'Оновлення Успішне',
 		};
 	} catch (error) {
 		return renderError(error);
@@ -598,21 +600,83 @@ export const updatePropertyImageAction = async (
 	const user = await getAuthUser();
 	const propertyId = formdata.get('id') as string;
 	try {
-		const image = formdata.get('image') as File;
-		const validatedField = validateFieldsWithZodSchema(ImageSchema, { image });
-		const fullPath = await uploadImage(validatedField.image);
+		const files = formdata.getAll('image') as File[];
+		const images: string[] = await Promise.all(
+			files.map(async (file) => {
+				const validateFile = validateFieldsWithZodSchema(ImageSchema, {
+					image: file,
+				});
+				return await uploadImage(validateFile.image);
+			})
+		);
+		const presentImages = await db.property.findUnique({
+			where: {
+				id: propertyId,
+				profileId: user.id,
+			},
+			select: {
+				image: true,
+			},
+		});
+		const newImages = presentImages?.image.concat(images);
 		await db.property.update({
 			where: {
 				id: propertyId,
 				profileId: user.id,
 			},
 			data: {
-				image: fullPath,
+				image: newImages,
 			},
 		});
 		revalidatePath(`/rentals/${propertyId}/edit`);
 		return {
-			message: 'Property Image Updated Successful',
+			message: 'Зображення Загрузились Успішно',
+		};
+	} catch (error) {
+		return renderError(error);
+	}
+};
+
+export const deletePropertyImageAction = async (
+	prevState: any,
+	formdata: FormData
+): Promise<{ message: string }> => {
+	const selectedImage = formdata.get('image') as string;
+	const propertyId = formdata.get('id') as string;
+
+	const user = await getAuthUser();
+	try {
+		const propertyImages = await db.property.findUnique({
+			where: {
+				id: propertyId,
+				profileId: user.id,
+			},
+			select: {
+				image: true,
+			},
+		});
+
+		const constructNewArrayImages =
+			propertyImages?.image?.filter((image) => image !== selectedImage) || [];
+		const path = getRelativePaths(selectedImage);
+
+		await deleteImageFromStorage(path);
+		console.log(path);
+
+		await db.property.update({
+			where: {
+				id: propertyId,
+				profileId: user.id,
+			},
+			data: {
+				image: constructNewArrayImages,
+			},
+		});
+
+		revalidatePath(`/rentals/${propertyId}/edit`);
+
+		return {
+			message: `видалено`,
 		};
 	} catch (error) {
 		return renderError(error);
@@ -723,9 +787,8 @@ export const fetchReservationStats = async () => {
 };
 
 export const getLocation = async (address: string) => {
-	const api_key = process.env.GOOGLE_API_KEY;
 	const response = await fetch(
-		`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${api_key}`
+		`https://nominatim.openstreetmap.org/search?q=${address}&format=json`
 	);
 	return response.json();
 };

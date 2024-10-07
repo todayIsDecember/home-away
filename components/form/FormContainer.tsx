@@ -9,7 +9,7 @@ const initialState = {
     message: '',
 };
 
-function FormContainer({action, children}: {action: actionFunction, children: React.ReactNode}) {
+function FormContainer({action, children, className}: {action: actionFunction, children: React.ReactNode, className?: string}) {
     const [state, formAction] = useFormState(action, initialState);
     const { toast } = useToast()
     
@@ -22,7 +22,7 @@ function FormContainer({action, children}: {action: actionFunction, children: Re
     }, [state])
     
     return (
-        <form action={formAction}>{children}</form>
+        <form action={formAction} className={className}>{children}</form>
     )
 }
 

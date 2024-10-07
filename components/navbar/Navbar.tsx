@@ -3,9 +3,9 @@ import DarkMode from './DarkMode';
 import LinksDropdown from './LinksDropdown';
 import Logo from './Logo';
 
-function Navbar() {
+function Navbar({className}: {className: string}) {
 	return (
-		<nav className="bg-none">
+		<nav className={`bg-none ${className}`}>
 			<div className="container navbarGrid gap-4 py-8">
 				<Logo className="logo" />
 				<NavSearch className="searchBar" />

@@ -7,6 +7,7 @@ import ImageContainer from '@/components/properties/ImageContainer';
 import PropertyDetails from '@/components/properties/PropertyDetails';
 import ShareButton from '@/components/properties/ShareButton';
 import UserInfo from '@/components/properties/UserInfo';
+import { pets } from '@/utils/pets';
 import {
 	fetchPropertyDetails,
 	findExistingReview,
@@ -19,6 +20,8 @@ import SubmitReviews from '@/components/reviews/SubmitReviews';
 import PropertyReviews from '@/components/reviews/PropertyReviews';
 import { auth } from '@clerk/nextjs/server';
 import ImagesContainer from '@/components/properties/ImagesContainer';
+import AditionInfo from '@/components/properties/adittionInfo';
+import { locations } from '@/utils/locations';
 
 const DynamicMap = dynamic(
 	() => import('@/components/properties/PropertyMap'),
@@ -43,9 +46,7 @@ async function PropertyDetailsPage({ params }: { params: { id: string } }) {
 	}
 	const { guests, bedrooms, beds, baths, address } = property;
 	const details = { guests, bedrooms, beds, baths };
-	const { lat, lng } = await getLocation(address).then(
-		(res) => res.results[0].geometry.location
-	);
+	const { lat, lon } = await getLocation(address).then((res) => res[0]);
 
 	const userId = auth().userId;
 	const isNotOwner = property.profile.clerkId !== userId;
@@ -72,8 +73,12 @@ async function PropertyDetailsPage({ params }: { params: { id: string } }) {
 					<PropertyDetails details={details} />
 					<UserInfo profile={property.profile} />
 					<Description description={property.description} />
+					<div className="lg:col-span-8 mt-4 py-4 flex flex-col gap-4">
+						<AditionInfo AditionArray={pets} value={property.pets} />
+						<AditionInfo AditionArray={locations} value={property.location} />
+					</div>
 					<Amenities amenities={property.amenities} />
-					<DynamicMap lat={lat} lng={lng} />
+					<DynamicMap lat={lat} lng={lon} />
 				</div>
 				<div className="lg:col-span-4">
 					<DynamicBookingWrapper

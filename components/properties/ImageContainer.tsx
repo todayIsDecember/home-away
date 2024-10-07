@@ -20,16 +20,15 @@ function ImageContainer({
 				fill
 				sizes="100vw"
 				alt={name}
-				className="object-cover rounded"
+				className="object-cover rounded object-center"
 				priority
 			/>
 			{isMain && (
-				<h3
-					className="absolute z-10 capitalize sm:text-5xl text-center px-4 text-2xl text-white w-full h-[300px] md:h-[500px] backdrop-brightness-50
+				<div
+					className="absolute z-10 h-[300px] md:h-[500px] w-full background-darker
 				flex items-center justify-center"
 				>
-					Мріяний відпочинок чекає на вас тут!
-				</h3>
+				</div>
 			)}
 		</section>
 	);
