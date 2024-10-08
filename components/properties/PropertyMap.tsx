@@ -17,7 +17,6 @@ const markerIcon = icon({
 
 function PropertyMap({ lat, lng }: { lat: number; lng: number }) {
 	const location = [lat, lng] as [number, number];
-	console.log(location);
 
 	const defaultLocation = [51.505, -0.09] as [number, number];
 	return (

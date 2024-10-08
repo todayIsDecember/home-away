@@ -7,6 +7,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import ImageContainer from '@/components/properties/ImageContainer';
 import { Suspense } from 'react';
 import LoadingImage from '@/components/properties/LoadImage';
+import ScrollToTop from '@/components/home/ScrolToTop';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -25,7 +26,7 @@ export default function RootLayout({
 			<html lang="en" suppressHydrationWarning>
 				<body className={inter.className}>
 					<Providers>
-						<Navbar className="absolute z-20 w-full backdrop-blur-sm shadow-2xl" />
+						<Navbar className="sm:absolute fixed z-20 w-full backdrop-blur-sm shadow-2xl" />
 						<Suspense fallback={<LoadingImage />}>
 							<ImageContainer
 								mainImage={
@@ -36,6 +37,7 @@ export default function RootLayout({
 							/>
 						</Suspense>
 						<main className="container py-10">{children}</main>
+						<ScrollToTop />
 					</Providers>
 				</body>
 			</html>
