@@ -17,6 +17,7 @@ import { error } from 'console';
 import { formatDate } from './format';
 import { getRelativePaths } from './constructPath';
 import { Prisma } from '@prisma/client';
+import { PropertyCardProps } from './types';
 
 const getAuthUser = async () => {
 	const user = await currentUser();
@@ -183,7 +184,7 @@ export const fetchProperties = async ({
 	search?: string;
 	category?: string;
 	advanced?: string;
-}) => {
+}): Promise<PropertyCardProps[]> => {
 	const amenities = advanced ? JSON.parse(advanced) : [];
 
 	// Формуємо умову для amenities
@@ -216,7 +217,10 @@ export const fetchProperties = async ({
 	query += ` ORDER BY "createdAt" DESC;`;
 
 	// Виконуємо запит із переданими параметрами
-	const properties = await db.$queryRawUnsafe(query, ...params);
+	const properties: PropertyCardProps[] = await db.$queryRawUnsafe(
+		query,
+		...params
+	);
 
 	return properties;
 };
