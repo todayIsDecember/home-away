@@ -1,21 +1,29 @@
-import LoadingCards from "@/components/card/LoadingCards";
-import CategoriesList from "@/components/home/CategoriesList";
-import PropertiesContainer from "@/components/home/PropertiesContainer";
-import { Suspense } from "react";
+import LoadingCards from '@/components/card/LoadingCards';
+import AdvancedSearch from '@/components/home/AdvancedSearch';
+import CategoriesList from '@/components/home/CategoriesList';
+import PropertiesContainer from '@/components/home/PropertiesContainer';
+import { Suspense } from 'react';
 
-export default function HomePage({searchParams}: {searchParams: {category?: string, search?: string}}) {
-  return (
-    <section>
-      <CategoriesList
-        category={searchParams.category}
-        search={searchParams.search}
-      />
-      <Suspense fallback={<LoadingCards />}>
-        <PropertiesContainer
-        category={searchParams.category}
-        search={searchParams.search}
-        />
-      </Suspense>
-    </section>
-  );
+export default function HomePage({
+	searchParams,
+}: {
+	searchParams: { category?: string; search?: string, advanced?: string };
+}) {
+	return (
+		<section>
+			<CategoriesList
+				category={searchParams.category}
+				search={searchParams.search}
+				advanced={searchParams.advanced}
+			/>
+			<AdvancedSearch />
+			<Suspense fallback={<LoadingCards />}>
+				<PropertiesContainer
+					category={searchParams.category}
+					search={searchParams.search}
+					advanced={searchParams.advanced}
+				/>
+			</Suspense>
+		</section>
+	);
 }

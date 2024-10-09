@@ -26,7 +26,8 @@ import { categories } from '@/utils/categories';
 async function EditRentalPage({ params }: { params: { id: string } }) {
 	const property = await fetchRentalDetails(params.id);
 	if (!property) redirect('/');
-	const defaultAmenities: Amenity[] = property.amenities as unknown as Amenity[];
+	const defaultAmenities: Amenity[] =
+		property.amenities as unknown as Amenity[];
 	return (
 		<section>
 			<h1 className="text-2xl capitalize mb-8 font-semibold">Edit Property</h1>

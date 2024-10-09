@@ -16,6 +16,7 @@ import { calculateTotal } from './calculateTotal';
 import { error } from 'console';
 import { formatDate } from './format';
 import { getRelativePaths } from './constructPath';
+import { Prisma } from '@prisma/client';
 
 const getAuthUser = async () => {
 	const user = await currentUser();
@@ -164,6 +165,7 @@ export const createPropertyAction = async (
 			data: {
 				...validatedFields,
 				image: images,
+				amenities: JSON.parse(validatedFields.amenities),
 				profileId: user.id,
 			},
 		});
@@ -176,30 +178,46 @@ export const createPropertyAction = async (
 export const fetchProperties = async ({
 	search = '',
 	category,
+	advanced,
 }: {
 	search?: string;
 	category?: string;
+	advanced?: string;
 }) => {
-	const properties = await db.property.findMany({
-		where: {
-			category,
-			OR: [
-				{ name: { contains: search, mode: 'insensitive' } },
-				{ tagline: { contains: search, mode: 'insensitive' } },
-			],
-		},
-		select: {
-			id: true,
-			name: true,
-			tagline: true,
-			price: true,
-			country: true,
-			image: true,
-		},
-		orderBy: {
-			createdAt: 'desc',
-		},
-	});
+	const amenities = advanced ? JSON.parse(advanced) : [];
+
+	// Формуємо умову для amenities
+	let amenitiesCondition = '';
+	if (amenities.length > 0) {
+		const conditions = amenities
+			.map(
+				(amenity: string) =>
+					`jsonb_path_exists(amenities, '$[*] ? (@.name == "${amenity}" && @.selected == true)')`
+			)
+			.join(' AND ');
+		amenitiesCondition = `AND (${conditions})`;
+	}
+
+	// Формуємо основний SQL-запит
+	let query = `
+	  SELECT id, name, tagline, price, country, image
+	  FROM "Property"
+	  WHERE (LOWER(name) LIKE LOWER($1) OR LOWER(tagline) LIKE LOWER($1))
+	  ${amenitiesCondition}
+	`;
+
+	// Додаємо умову для категорії, якщо вона передана
+	let params = [`%${search}%`]; // Додаємо параметри для пошуку
+	if (category) {
+		query += ` AND "category" = $2`;
+		params.push(category); // Додаємо параметр для категорії
+	}
+
+	query += ` ORDER BY "createdAt" DESC;`;
+
+	// Виконуємо запит із переданими параметрами
+	const properties = await db.$queryRawUnsafe(query, ...params);
+
 	return properties;
 };
 
@@ -582,6 +600,7 @@ export const updatePropertyAction = async (
 			},
 			data: {
 				...validatedFields,
+				amenities: JSON.parse(validatedFields.amenities),
 			},
 		});
 		revalidatePath(`/rentals/${propertyId}/edit`);

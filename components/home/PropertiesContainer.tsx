@@ -3,20 +3,30 @@ import PropertiesList from './PropertiesList';
 import EmptyList from './EmptyList';
 import type { PropertyCardProps } from '@/utils/types';
 
-async function PropertiesContainer({category, search}: {category?: string, search?: string}) {
-    const properties: PropertyCardProps[] = await fetchProperties({category, search});
-    if(properties.length === 0) {
-        return (
-            <EmptyList 
-                header='No results.'
-                message='Try changing or removing some of your filters.'
-                btnText='Clear Filters'
-            />
-        )
-    }
-    return (
-        <PropertiesList properties={properties} />
-    )
+async function PropertiesContainer({
+	category,
+	search,
+	advanced,
+}: {
+	category?: string;
+	search?: string;
+	advanced?: string;
+}) {
+	const properties: PropertyCardProps[] = await fetchProperties({
+		category,
+		search,
+		advanced,
+	});
+	if (properties.length === 0) {
+		return (
+			<EmptyList
+				header="No results."
+				message="Try changing or removing some of your filters."
+				btnText="Clear Filters"
+			/>
+		);
+	}
+	return <PropertiesList properties={properties} />;
 }
 
-export default PropertiesContainer
+export default PropertiesContainer;

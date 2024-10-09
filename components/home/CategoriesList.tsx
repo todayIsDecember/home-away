@@ -5,11 +5,21 @@ import Link from 'next/link';
 function CategoriesList({
 	category,
 	search,
+	advanced,
 }: {
 	category?: string;
 	search?: string;
+	advanced?: string;
 }) {
-	const searchTemp = search ? `&search=${search}` : '';
+	let searchTemp: string = '';
+
+	if (search && advanced) {
+		searchTemp = `&search=${search}&advanced=${advanced}`;
+	} else if (search) {
+		searchTemp = `&search=${search}`;
+	} else if (advanced) {
+		searchTemp = `&advanced=${advanced}`;
+	}
 	return (
 		<section>
 			<ScrollArea className="py-6">
